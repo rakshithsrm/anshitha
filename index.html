@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>For Chello</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#d48080;
+  --rose-pale:#f7eeee;
+  --rose-deep:#b05555;
+  --cream:#fdf8f5;
+  --gold:#c9a96e;
+  --text:#2e1f1f;
+  --soft:#7a5555;
+  --white:#fff;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  font-family:'Lato',sans-serif;
+  background:var(--cream);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+  min-height:100dvh;
+  width:100%;
+}
+img,canvas{display:block}
+
+canvas#petals{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ======= LOGIN ======= */
+#login-page{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:1.2rem;
+  min-height:100vh;min-height:100dvh;
+}
+.login-card{
+  background:var(--white);
+  border:0.5px solid #e8d2d2;
+  border-radius:24px;
+  padding:clamp(1.8rem,6vw,3rem) clamp(1.4rem,5vw,2.5rem);
+  width:100%;max-width:400px;
+  text-align:center;
+  animation:fadeUp 0.9s ease both;
+}
+.login-heart{
+  font-size:clamp(2rem,6vw,2.6rem);
+  color:var(--rose);
+  animation:heartPulse 1.8s ease-in-out infinite;
+  display:block;margin-bottom:0.9rem;
+}
+.login-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,5vw,1.8rem);
+  font-weight:400;font-style:italic;
+  color:var(--text);margin-bottom:0.3rem;
+}
+.login-sub{
+  font-size:clamp(0.7rem,2.5vw,0.8rem);
+  color:var(--soft);letter-spacing:0.1rem;margin-bottom:1.6rem;
+  line-height:1.5;
+}
+.login-field{
+  width:100%;margin-bottom:0.85rem;
+  border:0.5px solid #e8d2d2;
+  border-radius:50px;
+  padding:0.82rem 1.2rem;
+  font-family:'Lato',sans-serif;
+  font-size:clamp(0.88rem,3.5vw,0.95rem);
+  font-weight:300;color:var(--text);
+  background:var(--cream);outline:none;
+  transition:border-color 0.3s;
+  text-align:center;
+  -webkit-appearance:none;appearance:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.login-field:focus{border-color:var(--rose)}
+.login-field::placeholder{color:#c4a5a5}
+.login-btn{
+  width:100%;margin-top:0.3rem;
+  padding:0.88rem 2rem;
+  background:var(--rose);
+  border:none;border-radius:50px;
+  font-family:'Lato',sans-serif;
+  font-size:clamp(0.72rem,2.5vw,0.8rem);
+  letter-spacing:0.25rem;text-transform:uppercase;
+  color:var(--white);cursor:pointer;
+  transition:background 0.3s,transform 0.15s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.login-btn:hover{background:var(--rose-deep)}
+.login-btn:active{transform:scale(0.97)}
+.login-error{
+  margin-top:0.85rem;
+  font-size:clamp(0.75rem,2.5vw,0.8rem);
+  color:var(--rose-deep);font-style:italic;min-height:1.2rem;
+}
+.login-hint{
+  margin-top:1.2rem;
+  font-size:clamp(0.68rem,2vw,0.73rem);
+  color:#c4a5a5;font-style:italic;
+}
+
+/* ======= INTRO ======= */
+#intro{
+  position:fixed;inset:0;
+  background:var(--cream);z-index:999;
+  display:none;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:2rem 1.5rem;
+  transition:opacity 1.2s ease;
+  min-height:100vh;min-height:100dvh;
+}
+#intro.show{display:flex}
+#intro.gone{opacity:0;pointer-events:none}
+.intro-heart{
+  font-size:clamp(2.5rem,8vw,3.5rem);
+  color:var(--rose);animation:heartPulse 1.4s ease-in-out infinite;
+}
+.intro-sub{
+  margin-top:1.1rem;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1rem,4vw,1.4rem);
+  font-style:italic;color:var(--soft);
+  opacity:0;animation:fadeUp 1s 0.6s ease both;
+  max-width:300px;line-height:1.7;
+}
+.intro-btn{
+  margin-top:2rem;
+  padding:0.78rem 2rem;
+  background:transparent;
+  border:1px solid var(--rose);
+  border-radius:40px;
+  font-family:'Lato',sans-serif;
+  font-size:clamp(0.72rem,2.5vw,0.82rem);
+  letter-spacing:0.22rem;text-transform:uppercase;
+  color:var(--rose-deep);cursor:pointer;
+  opacity:0;animation:fadeUp 1s 1.2s ease both;
+  transition:background 0.3s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.intro-btn:hover{background:var(--rose-pale)}
+.intro-btn:active{background:var(--rose-pale)}
+
+/* ======= MAIN ======= */
+main{position:relative;z-index:1}
+
+/* HERO */
+.hero{
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:4rem 1.5rem 5rem;
+}
+.hero-to{
+  font-size:clamp(0.6rem,2vw,0.72rem);
+  letter-spacing:0.38rem;text-transform:uppercase;
+  color:var(--rose);margin-bottom:0.9rem;
+  animation:fadeUp 1s 0.2s ease both;opacity:0;
+}
+.hero-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3.8rem,20vw,9.5rem);
+  font-weight:400;line-height:0.92;
+  color:var(--text);
+  animation:fadeUp 1s 0.5s ease both;opacity:0;
+  word-break:break-word;
+}
+.hero-name em{font-style:italic;color:var(--rose-deep)}
+.hero-verse{
+  margin-top:1.8rem;
+  max-width:min(420px,88vw);
+  font-size:clamp(0.88rem,3vw,1rem);
+  font-weight:300;line-height:1.9;
+  color:var(--soft);font-style:italic;
+  animation:fadeUp 1s 0.9s ease both;opacity:0;
+}
+.scroll-hint{
+  margin-top:2.8rem;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--rose);
+  font-size:clamp(0.6rem,2vw,0.7rem);
+  letter-spacing:0.2rem;text-transform:uppercase;
+  animation:fadeUp 1s 1.4s ease both;opacity:0;
+}
+.scroll-line{
+  width:1px;height:36px;
+  background:linear-gradient(to bottom,var(--rose),transparent);
+  animation:linePulse 2s ease-in-out infinite;
+}
+
+/* SECTIONS */
+.sec{
+  position:relative;z-index:1;
+  max-width:min(660px,92vw);
+  margin:0 auto;
+  padding:clamp(3rem,8vw,6rem) clamp(1rem,4vw,1.5rem);
+}
+.sec-label{
+  font-size:clamp(0.6rem,2vw,0.68rem);
+  letter-spacing:0.35rem;text-transform:uppercase;
+  color:var(--rose);margin-bottom:0.85rem;
+}
+.sec-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.65rem,6vw,3rem);
+  font-weight:400;line-height:1.25;
+  color:var(--text);margin-bottom:1.5rem;
+}
+.sec-title em{font-style:italic;color:var(--rose-deep)}
+.sec-body{
+  font-size:clamp(0.93rem,3vw,1.05rem);
+  font-weight:300;line-height:2;color:var(--soft);
+}
+.sec-body strong{font-weight:400;color:var(--text)}
+
+.divider{
+  text-align:center;color:var(--rose);
+  font-size:1rem;letter-spacing:0.9rem;
+  padding:0.5rem 0;z-index:1;position:relative;
+}
+
+/* TRAITS */
+.traits{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:clamp(0.7rem,2vw,1.2rem);
+  margin-top:2rem;
+}
+.tc{
+  background:var(--white);
+  border:0.5px solid #e8d2d2;
+  border-radius:18px;
+  padding:clamp(1.2rem,4vw,1.8rem) clamp(0.8rem,3vw,1.2rem);
+  text-align:center;
+  transition:transform 0.35s ease;
+}
+.tc-icon{font-size:clamp(1.5rem,5vw,1.9rem);margin-bottom:0.6rem}
+.tc-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.95rem,3.5vw,1.15rem);
+  color:var(--text);margin-bottom:0.4rem;
+}
+.tc-desc{
+  font-size:clamp(0.76rem,2.5vw,0.85rem);
+  font-weight:300;color:var(--soft);line-height:1.6;
+}
+
+/* TIMELINE */
+.tl{margin-top:1.8rem;padding-left:1.3rem;border-left:1px solid #e8d2d2}
+.tl-item{position:relative;padding:0 0 2.4rem 1.5rem}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:'';position:absolute;left:-5px;top:7px;
+  width:9px;height:9px;background:var(--rose);border-radius:50%;
+}
+.tl-moment{
+  font-size:clamp(0.63rem,2vw,0.7rem);
+  letter-spacing:0.2rem;text-transform:uppercase;
+  color:var(--rose);margin-bottom:0.4rem;
+}
+.tl-text{
+  font-size:clamp(0.9rem,3vw,1rem);
+  font-weight:300;color:var(--soft);line-height:1.9;
+}
+
+/* PROMISE */
+.promise{
+  background:var(--white);
+  border:0.5px solid #e8d2d2;
+  border-radius:24px;
+  padding:clamp(2rem,6vw,3.5rem) clamp(1.3rem,5vw,3rem);
+  text-align:center;
+  position:relative;overflow:hidden;
+  margin-top:1.8rem;
+}
+.promise::before{
+  content:'\201C';
+  position:absolute;top:-1.2rem;left:1rem;
+  font-size:clamp(5rem,14vw,8rem);
+  color:#f5e5e5;
+  font-family:'Playfair Display',serif;
+  line-height:1;pointer-events:none;
+}
+.promise-text{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.98rem,3.5vw,1.55rem);
+  font-weight:400;font-style:italic;
+  line-height:1.9;color:var(--text);
+  position:relative;z-index:1;
+}
+.promise-text .name{color:var(--rose-deep);font-style:normal}
+.promise-line{width:36px;height:1px;background:var(--rose);margin:1.5rem auto}
+.promise-sig{
+  font-size:clamp(0.65rem,2vw,0.75rem);
+  letter-spacing:0.25rem;text-transform:uppercase;color:var(--gold);
+}
+
+/* CLOSING */
+.closing{
+  text-align:center;
+  padding:clamp(2.5rem,6vw,4rem) 1.5rem clamp(3.5rem,8vw,5.5rem);
+  z-index:1;position:relative;
+}
+.closing-heart{
+  font-size:clamp(1.8rem,6vw,2.2rem);
+  color:var(--rose);display:block;
+  animation:heartPulse 1.8s ease-in-out infinite;
+}
+.closing-text{
+  margin-top:0.9rem;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.9rem,3.5vw,1.1rem);
+  font-style:italic;color:var(--soft);
+  max-width:min(400px,88vw);
+  margin-left:auto;margin-right:auto;
+  line-height:1.7;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@keyframes linePulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.9s ease,transform 0.9s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* SMALL PHONES */
+@media(max-width:360px){
+  .traits{grid-template-columns:1fr}
+  .hero-name{font-size:3.2rem}
+}
+/* TOUCH DEVICES — disable hover tricks */
+@media(hover:none){
+  .tc:hover{transform:none}
+  .login-btn:hover{background:var(--rose)}
+  .intro-btn:hover{background:transparent}
+}
+</style>
+</head>
+<body>
+
+<canvas id="petals"></canvas>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="bg-music" loop preload="auto">
+  <source src="ANSHITHA.mpeg" type="audio/mpeg">
+</audio>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-card">
+    <span class="login-heart">♡</span>
+    <h1 class="login-title">For Someone Special</h1>
+    <p class="login-sub">This place was made only for you</p>
+    <input class="login-field" id="usr" type="text" placeholder="Your name"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text"/>
+    <input class="login-field" id="pwd" type="password" placeholder="Your secret" autocomplete="off"/>
+    <button class="login-btn" onclick="tryLogin()">Enter with love</button>
+    <p class="login-error" id="err"></p>
+    <p class="login-hint">Only one heart holds the key 🗝️</p>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="intro-heart">♡</div>
+  <p class="intro-sub">This was made just for you, Chello</p>
+  <button class="intro-btn" onclick="openSite()">Open with love</button>
+</div>
+
+<!-- MAIN -->
+<main id="main" style="opacity:0;transition:opacity 1s ease">
+
+  <div class="hero">
+    <p class="hero-to">A love letter to</p>
+    <h1 class="hero-name">Ch<em>ello</em></h1>
+    <p class="hero-verse">"You didn't just walk into my life — you brought light into places I didn't even know were dark."</p>
+    <div class="scroll-hint">
+      <span>Read on</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <section class="sec reveal">
+    <p class="sec-label">Who she is</p>
+    <h2 class="sec-title">She is <em>God's finest work</em></h2>
+    <p class="sec-body">
+      There are people you meet and forget. And then there is <strong>Chello</strong>.<br><br>
+      She is a sweet, gentle soul — the kind of girl whose heart is so full of care and love that it quietly overflows into everything she touches. She doesn't try to be extraordinary. She just is.<br><br>
+      I didn't plan for her. I didn't pray for her specifically. But the moment she arrived in my life, I understood — <strong>this is what God's most careful, most loving gift looks like.</strong>
+    </p>
+  </section>
+
+  <div class="divider reveal">— ♡ —</div>
+
+  <section class="sec reveal">
+    <p class="sec-label">The little things</p>
+    <h2 class="sec-title">What I <em>treasure</em> about her</h2>
+    <div class="traits">
+      <div class="tc">
+        <div class="tc-icon">👁️</div>
+        <div class="tc-title">Her Eyes</div>
+        <div class="tc-desc">Quiet and deep and honest. One look and I feel like I'm home.</div>
+      </div>
+      <div class="tc">
+        <div class="tc-icon">🌸</div>
+        <div class="tc-title">Her Smile</div>
+        <div class="tc-desc">Pure. Baby-soft. Makes the whole room warmer without trying.</div>
+      </div>
+      <div class="tc">
+        <div class="tc-icon">🤍</div>
+        <div class="tc-title">Her Heart</div>
+        <div class="tc-desc">She cares so deeply — for others, for small things, for moments most people miss.</div>
+      </div>
+      <div class="tc">
+        <div class="tc-icon">🕊️</div>
+        <div class="tc-title">Her Gentleness</div>
+        <div class="tc-desc">In a world that is loud and harsh, she is soft. And that takes real strength.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider reveal">— ♡ —</div>
+
+  <section class="sec reveal">
+    <p class="sec-label">Our story</p>
+    <h2 class="sec-title">A beginning <em>worth everything</em></h2>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-moment">Before you</div>
+        <div class="tl-text">Life moved. Days passed. But something was always quietly missing — a warmth I couldn't name.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-moment">When we found each other</div>
+        <div class="tl-text">We only just started — and yet it already feels like the most real, most beautiful thing I have ever stepped into. Some beginnings are so right, they feel like coming home.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-moment">What lies ahead</div>
+        <div class="tl-text">Every page ahead is still blank — and I want to fill every single one of them with you, Chello. Slowly. Carefully. With all the love I have.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider reveal">— ♡ —</div>
+
+  <section class="sec reveal">
+    <p class="sec-label">My promise to you</p>
+    <h2 class="sec-title">Words I mean <em>with everything</em></h2>
+    <div class="promise">
+      <p class="promise-text">
+        "<span class="name">Chello</span> — I know your past carried weight that wasn't yours to carry. I know you've been hurt in ways you never deserved.<br><br>
+        I promise you — I will never be that. I will never make you feel small, forgotten, or unsafe. Every single day, I will remind you what it feels like to be truly loved, truly seen, and truly safe.<br><br>
+        You are not your past. With me, you get a new story. And I will protect it with everything I am."
+      </p>
+      <div class="promise-line"></div>
+      <p class="promise-sig">— Yours, always and completely</p>
+    </div>
+  </section>
+
+  <div class="closing reveal">
+    <span class="closing-heart">♡</span>
+    <p class="closing-text">Made with every piece of my heart — just for you, Chello.</p>
+  </div>
+
+</main>
+
+<script>
+function tryLogin(){
+  const u = document.getElementById('usr').value.trim();
+  const p = document.getElementById('pwd').value.trim();
+  const err = document.getElementById('err');
+  if(u === 'ANSHITHA' && p === 'R ANSHITHA'){
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('intro').classList.add('show');
+    const music = document.getElementById('bg-music');
+    music.volume = 0.6;
+    music.play().catch(()=>{});
+  } else {
+    err.textContent = "Hmm, that doesn't seem right… try again 🌸";
+    ['usr','pwd'].forEach(id=>{
+      const el = document.getElementById(id);
+      el.style.borderColor = '#d48080';
+      setTimeout(()=>{ el.style.borderColor = '#e8d2d2'; }, 2000);
+    });
+  }
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); });
+
+function openSite(){
+  const intro = document.getElementById('intro');
+  const mainEl = document.getElementById('main');
+  intro.classList.add('gone');
+  setTimeout(()=>{
+    intro.classList.remove('show');
+    intro.classList.remove('gone');
+    mainEl.style.opacity = '1';
+  }, 1300);
+}
+
+/* PETALS */
+const canvas = document.getElementById('petals');
+const ctx = canvas.getContext('2d');
+let W, H, petals = [];
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+function rand(a,b){ return a + Math.random()*(b-a); }
+function mkPetal(){
+  return {
+    x:rand(0,W), y:rand(-80,-5),
+    r:rand(2.5,7), vy:rand(0.35,1.1),
+    vx:rand(-0.3,0.3), alpha:rand(0.2,0.55),
+    w:rand(0,Math.PI*2), ws:rand(0.007,0.022),
+    c:`hsl(${rand(338,360)},${rand(55,75)}%,${rand(82,94)}%)`
+  };
+}
+const COUNT = window.innerWidth < 480 ? 18 : 30;
+for(let i=0;i<COUNT;i++){ const p=mkPetal(); p.y=rand(0,H); petals.push(p); }
+(function drawLoop(){
+  ctx.clearRect(0,0,W,H);
+  petals.forEach(p=>{
+    ctx.save(); ctx.globalAlpha=p.alpha; ctx.beginPath();
+    ctx.ellipse(p.x,p.y,p.r,p.r*0.55,p.w,0,Math.PI*2);
+    ctx.fillStyle=p.c; ctx.fill(); ctx.restore();
+    p.y+=p.vy; p.x+=p.vx+Math.sin(p.w)*0.2; p.w+=p.ws;
+    if(p.y>H+20) Object.assign(p,mkPetal());
+  });
+  requestAnimationFrame(drawLoop);
+})();
+
+/* SCROLL REVEAL */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{ threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
