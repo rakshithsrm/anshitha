@@ -1,2 +1,0 @@
-Put your song in this folder as munbe-vaa.mp3 (an .m4a file also works).
-It plays after the fireworks. You can delete this text file.
